@@ -1,5 +1,2 @@
-# Trilha JS Developer - Pokedex
+# Trilha JS Developer -  My Pokedex
 
-Teste de modificação
-
-outra alteração
