@@ -9,13 +9,18 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Variáveis CSS */
+/* ─── Variáveis CSS ────────────────────────────────────────────────────────────
+   Aqui ficam os VALORES PADRÃO (light mode).
+   Todas as cores do site usam var(--...) em vez de valores fixos.
+   Isso permite trocar o tema inteiro alterando só essas variáveis.
+──────────────────────────────────────────────────────────────────────────────── */
 :root {
-    /* Cores */
+    /* Cores — light mode (padrão) */
     --background-color: #f6f8fc;
-    --content-background-color: #fff;
-    --text-color: #333;
+    --content-background-color: #ffffff;
+    --text-color: #333333;
     --primary-color: #007bff;
+    --primary-color-hover: #0056b3;
     --secondary-color: #6c757d;
 
     /* Tipografia */
@@ -29,27 +34,56 @@ html {
     --content-border-radius: 1rem;
 }
 
+/* ─── Dark mode automático (respeita o SO do usuário) ──────────────────────────
+   Só entra em ação se o usuário NÃO tiver escolhido um tema manualmente.
+   Se tiver, as classes body.dark-mode ou body.light-mode têm prioridade.
+──────────────────────────────────────────────────────────────────────────────── */
 @media (prefers-color-scheme: dark) {
     :root {
         --background-color: #1a1a1a;
         --content-background-color: #2d2d2d;
         --text-color: #f8f9fa;
+        --primary-color: #4dabf7;
+        --primary-color-hover: #74c0fc;
     }
 }
 
-/* Estilos Globais */
+/* ─── Dark mode manual (botão do usuário) ──────────────────────────────────────
+   Adicionado pelo JS via: document.body.classList.add('dark-mode')
+   Sobrescreve o @media acima porque tem maior especificidade (seletor + classe).
+──────────────────────────────────────────────────────────────────────────────── */
+body.dark-mode {
+    --background-color: #1a1a1a;
+    --content-background-color: #2d2d2d;
+    --text-color: #f8f9fa;
+    --primary-color: #4dabf7;
+    --primary-color-hover: #74c0fc;
+}
+
+/* ─── Light mode manual (botão do usuário) ─────────────────────────────────────
+   Adicionado pelo JS via: document.body.classList.add('light-mode')
+   Isso permite forçar o light mesmo quando o SO está em dark.
+   Sem essa classe, o @media (prefers-color-scheme: dark) ainda venceria.
+──────────────────────────────────────────────────────────────────────────────── */
+body.light-mode {
+    --background-color: #f6f8fc;
+    --content-background-color: #ffffff;
+    --text-color: #333333;
+    --primary-color: #007bff;
+    --primary-color-hover: #0056b3;
+}
+
+/* ─── Estilos Globais ──────────────────────────────────────────────────────────
+   transition: garante que a troca de tema seja suave (0.3s) em vez de abrupta.
+   Sem isso, ao clicar no botão as cores mudam instantaneamente.
+──────────────────────────────────────────────────────────────────────────────── */
 body {
     font-family: var(--font-family);
     background-color: var(--background-color);
     color: var(--text-color);
     font-size: var(--font-size-base);
     line-height: var(--line-height-base);
-}
-
-body.dark-mode {
-    --background-color: #333;
-    --content-background-color: #444;
-    --text-color: #f6f8fc;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .content {
@@ -57,9 +91,10 @@ body.dark-mode {
     min-height: 100vh;
     padding: var(--content-padding);
     background-color: var(--content-background-color);
+    transition: background-color 0.3s ease;
 }
 
-/* Transições suaves para links e imagens */
+/* Links */
 a {
     color: var(--primary-color);
     text-decoration: none;
@@ -68,11 +103,12 @@ a {
 
 a:hover,
 a:focus {
-    color: darken(var(--primary-color), 10%);
+    color: var(--primary-color-hover);
     text-decoration: underline;
     transform: scale(1.05);
 }
 
+/* Imagens */
 img {
     max-width: 100%;
     height: auto;
@@ -84,6 +120,7 @@ img:hover {
     transform: scale(1.05);
 }
 
+/* Header */
 header {
     display: flex;
     flex-direction: column;
@@ -92,8 +129,11 @@ header {
     position: relative;
 }
 
+/* ─── Botão de tema ────────────────────────────────────────────────────────────
+   Usa var(--primary-color) para também mudar de cor junto com o tema.
+──────────────────────────────────────────────────────────────────────────────── */
 #theme-toggle {
-    position: fixed; /* Alterado de absolute para fixed */
+    position: fixed;
     top: 10px;
     right: 10px;
     width: 40px;
@@ -107,9 +147,15 @@ header {
     align-items: center;
     justify-content: center;
     font-size: 20px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Responsividade */
+#theme-toggle:hover {
+    background-color: var(--primary-color-hover);
+    transform: scale(1.1);
+}
+
+/* ─── Responsividade ───────────────────────────────────────────────────────────*/
 @media screen and (min-width: 576px) {
     .content {
         padding: 1.5rem;
